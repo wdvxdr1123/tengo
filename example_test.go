@@ -16,10 +16,13 @@ each := func(seq, fn) {
 
 sum := 0
 mul := 1
-each([a, b, c, d], func(x) {
+
+calc := func(x) {
 	sum += x
 	mul *= x
-})`
+}
+
+[a, b, c, d].$each(calc)`
 
 	// create a new Script instance
 	script := tengo.NewScript([]byte(src))

@@ -244,6 +244,8 @@ L:
 			switch p.token {
 			case token.Ident:
 				x = p.parseSelector(x)
+			case token.Dollar:
+				x = p.parseDollarCall(x)
 			default:
 				pos := p.pos
 				p.errorExpected(pos, "selector")
@@ -1187,6 +1189,40 @@ func (p *Parser) safePos(pos Pos) Pos {
 		return Pos(fileBase + fileSize)
 	}
 	return pos
+}
+
+func (p *Parser) parseDollarCall(x Expr) Expr {
+	if p.trace {
+		defer untracep(tracep(p, "DollarCall"))
+	}
+	_ = p.expect(token.Dollar)
+
+	var list = []Expr{x}
+	Func := p.parseOperand()
+
+	lparen := p.expect(token.LParen)
+	p.exprLevel++
+	var ellipsis Pos
+	for p.token != token.RParen && p.token != token.EOF && !ellipsis.IsValid() {
+		list = append(list, p.parseExpr())
+		if p.token == token.Ellipsis {
+			ellipsis = p.pos
+			p.next()
+		}
+		if !p.expectComma(token.RParen, "call argument") {
+			break
+		}
+	}
+
+	p.exprLevel--
+	rparen := p.expect(token.RParen)
+	return &CallExpr{
+		Func:     Func,
+		LParen:   lparen,
+		RParen:   rparen,
+		Ellipsis: ellipsis,
+		Args:     list,
+	}
 }
 
 func tracep(p *Parser, msg string) *Parser {
