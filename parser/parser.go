@@ -1239,14 +1239,32 @@ func (p *Parser) parseLambdaLit() Expr {
 		defer untracep(tracep(p, "LambdaLit"))
 	}
 	var typ = &FuncType{FuncPos: p.pos}
+	var body *BlockStmt
 	switch p.token {
 	case token.Or:
 		typ.Params = p.parseLambdaParameterList()
 	case token.LOr:
+		p.next()
 		typ.Params = nil
 	}
 	p.exprLevel++
-	body := p.parseBody()
+	switch p.token {
+	case token.LBrace:
+		body = p.parseBody()
+	default:
+		lpos := p.pos
+		expr := p.parseLambdaSimpleBody()
+		body = &BlockStmt{
+			Stmts: []Stmt{
+				&ReturnStmt{
+					ReturnPos: lpos,
+					Result:    expr,
+				},
+			},
+			LBrace: lpos,
+			RBrace: p.pos,
+		}
+	}
 	p.exprLevel--
 	return &FuncLit{
 		Type: typ,
@@ -1282,6 +1300,20 @@ func (p *Parser) parseLambdaParameterList() *IdentList {
 		VarArgs: isVarArgs,
 		List:    params,
 	}
+}
+
+func (p *Parser) parseLambdaSimpleBody() Expr {
+	if p.trace {
+		defer untracep(tracep(p, "LambdaSimpleBody"))
+	}
+
+	expr := p.parseBinaryExpr(token.LowestPrec + 1)
+
+	// ternary conditional expression
+	if p.token == token.Question {
+		return p.parseCondExpr(expr)
+	}
+	return expr
 }
 
 func tracep(p *Parser, msg string) *Parser {
