@@ -140,6 +140,8 @@ func (s *Scanner) Scan() (
 			tok = token.Comma
 		case '?':
 			tok = token.Question
+		case '@':
+			tok = token.At
 		case ';':
 			tok = token.Semicolon
 			literal = ";"

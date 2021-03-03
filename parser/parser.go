@@ -680,6 +680,8 @@ func (p *Parser) parseStmt() (stmt Stmt) {
 		s := p.parseSimpleStmt(false)
 		p.expectSemi()
 		return s
+	case token.Let:
+		return p.parseLetDefineStmt()
 	case token.Return:
 		return p.parseReturnStmt()
 	case token.Export:
@@ -1273,6 +1275,10 @@ func (p *Parser) parseLambdaLit() Expr {
 }
 
 func (p *Parser) parseLambdaParameterList() *IdentList {
+	if p.trace {
+		defer untracep(tracep(p, "LambdaParameterList"))
+	}
+
 	var params []*Ident
 	lparen := p.expect(token.Or)
 	isVarArgs := false
@@ -1314,6 +1320,23 @@ func (p *Parser) parseLambdaSimpleBody() Expr {
 		return p.parseCondExpr(expr)
 	}
 	return expr
+}
+
+func (p *Parser) parseLetDefineStmt() Stmt {
+	if p.trace {
+		defer untracep(tracep(p, "LetStmt"))
+	}
+
+	pos := p.expect(token.Let)
+	lhs := p.parseExprList()
+	p.expect(token.Assign)
+	rhs := p.parseExprList()
+	return &AssignStmt{
+		LHS:      lhs,
+		RHS:      rhs,
+		Token:    token.Let,
+		TokenPos: pos,
+	}
 }
 
 func tracep(p *Parser, msg string) *Parser {

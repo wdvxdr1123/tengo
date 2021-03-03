@@ -654,13 +654,13 @@ func (c *Compiler) compileAssign(
 	ident, selectors := resolveAssignLHS(lhs[0])
 	numSel := len(selectors)
 
-	if op == token.Define && numSel > 0 {
+	if (op == token.Define || op == token.Let) && numSel > 0 {
 		// using selector on new variable does not make sense
 		return c.errorf(node, "operator ':=' not allowed with selector")
 	}
 
 	symbol, depth, exists := c.symbolTable.Resolve(ident, false)
-	if op == token.Define {
+	if op == token.Define || op == token.Let {
 		if depth == 0 && exists {
 			return c.errorf(node, "'%s' redeclared in this block", ident)
 		}

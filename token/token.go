@@ -68,6 +68,7 @@ const (
 	Colon        // :
 	Question     // ?
 	Pipe         // ->
+	At           // @
 	_operatorEnd
 	_keywordBeg
 	Break
@@ -85,6 +86,7 @@ const (
 	In
 	Undefined
 	Import
+	Let
 	_keywordEnd
 )
 
@@ -145,6 +147,7 @@ var tokens = [...]string{
 	Colon:        ":",
 	Question:     "?",
 	Pipe:         "->",
+	At:           "@",
 	Break:        "break",
 	Continue:     "continue",
 	Else:         "else",
@@ -160,6 +163,7 @@ var tokens = [...]string{
 	In:           "in",
 	Undefined:    "undefined",
 	Import:       "import",
+	Let:          "let",
 }
 
 func (tok Token) String() string {
