@@ -11,7 +11,7 @@ func Example() {
 	// Tengo script code
 	src := `
 each := func(seq, fn) {
-    for x in seq { fn(x) }
+    for x in seq { x.$fn } // fn(x)
 }
 
 sum := 0

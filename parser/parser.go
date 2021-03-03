@@ -445,6 +445,8 @@ func (p *Parser) parseOperand() Expr {
 		return p.parseMapLit()
 	case token.Func: // function literal
 		return p.parseFuncLit()
+	case token.Or, token.LOr: // lambda literal
+		return p.parseLambdaLit()
 	case token.Error: // error expression
 		return p.parseErrorExpr()
 	case token.Immutable: // immutable expression
@@ -1196,13 +1198,20 @@ func (p *Parser) parseDollarCall(x Expr) Expr {
 		defer untracep(tracep(p, "DollarCall"))
 	}
 	_ = p.expect(token.Dollar)
-
 	var list = []Expr{x}
 	Func := p.parseOperand()
-
-	lparen := p.expect(token.LParen)
+	if p.token != token.LParen {
+		return &CallExpr{
+			Func:     Func,
+			LParen:   Func.Pos(),
+			RParen:   Func.Pos(),
+			Ellipsis: 0,
+			Args:     list,
+		}
+	}
+	var lparen, rparen, ellipsis Pos
+	lparen = p.expect(token.LParen)
 	p.exprLevel++
-	var ellipsis Pos
 	for p.token != token.RParen && p.token != token.EOF && !ellipsis.IsValid() {
 		list = append(list, p.parseExpr())
 		if p.token == token.Ellipsis {
@@ -1215,13 +1224,63 @@ func (p *Parser) parseDollarCall(x Expr) Expr {
 	}
 
 	p.exprLevel--
-	rparen := p.expect(token.RParen)
+	rparen = p.expect(token.RParen)
 	return &CallExpr{
 		Func:     Func,
 		LParen:   lparen,
 		RParen:   rparen,
 		Ellipsis: ellipsis,
 		Args:     list,
+	}
+}
+
+func (p *Parser) parseLambdaLit() Expr {
+	if p.trace {
+		defer untracep(tracep(p, "LambdaLit"))
+	}
+	var typ = &FuncType{FuncPos: p.pos}
+	switch p.token {
+	case token.Or:
+		typ.Params = p.parseLambdaParameterList()
+	case token.LOr:
+		typ.Params = nil
+	}
+	p.exprLevel++
+	body := p.parseBody()
+	p.exprLevel--
+	return &FuncLit{
+		Type: typ,
+		Body: body,
+	}
+}
+
+func (p *Parser) parseLambdaParameterList() *IdentList {
+	var params []*Ident
+	lparen := p.expect(token.Or)
+	isVarArgs := false
+	if p.token != token.Or {
+		if p.token == token.Ellipsis {
+			isVarArgs = true
+			p.next()
+		}
+
+		params = append(params, p.parseIdent())
+		for !isVarArgs && p.token == token.Comma {
+			p.next()
+			if p.token == token.Ellipsis {
+				isVarArgs = true
+				p.next()
+			}
+			params = append(params, p.parseIdent())
+		}
+	}
+
+	rparen := p.expect(token.Or)
+	return &IdentList{
+		LParen:  lparen,
+		RParen:  rparen,
+		VarArgs: isVarArgs,
+		List:    params,
 	}
 }
 
