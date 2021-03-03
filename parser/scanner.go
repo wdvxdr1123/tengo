@@ -5,7 +5,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/d5/tengo/v2/token"
+	"github.com/wdvxdr1123/tengo/v2/token"
 )
 
 // byte order mark
@@ -140,8 +140,6 @@ func (s *Scanner) Scan() (
 			tok = token.Comma
 		case '?':
 			tok = token.Question
-		case '$':
-			tok = token.Pipe
 		case ';':
 			tok = token.Semicolon
 			literal = ";"

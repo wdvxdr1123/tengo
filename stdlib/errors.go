@@ -1,7 +1,7 @@
 package stdlib
 
 import (
-	"github.com/d5/tengo/v2"
+	"github.com/wdvxdr1123/tengo/v2"
 )
 
 func wrapError(err error) tengo.Object {

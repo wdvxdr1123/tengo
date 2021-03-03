@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/d5/tengo/v2"
-	"github.com/d5/tengo/v2/parser"
-	"github.com/d5/tengo/v2/require"
+	"github.com/wdvxdr1123/tengo/v2"
+	"github.com/wdvxdr1123/tengo/v2/parser"
+	"github.com/wdvxdr1123/tengo/v2/require"
 )
 
 type srcfile struct {

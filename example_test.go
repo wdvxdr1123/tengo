@@ -4,14 +4,14 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/d5/tengo/v2"
+	"github.com/wdvxdr1123/tengo/v2"
 )
 
 func Example() {
 	// Tengo script code
 	src := `
 each := func(seq, fn) {
-    for x in seq { x.$fn } // fn(x)
+    for x in seq { x->fn } // fn(x)
 }
 
 sum := 0
@@ -22,7 +22,7 @@ calc := func(x) {
 	mul *= x
 }
 
-[a, b, c, d].$each(calc)`
+[a, b, c, d]->each(calc)`
 
 	// create a new Script instance
 	script := tengo.NewScript([]byte(src))

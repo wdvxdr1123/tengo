@@ -111,7 +111,7 @@ export {
   // `fn` is invoked with two arguments: `key` and `value`. `key` is an int index
   // if `x` is array. `key` is a string key if `x` is map. It returns undefined
   // if `x` is not enumerable.
-  map: func(x, fn) {
+  map: |x, fn| {
     if !is_enumerable(x) { return undefined }
 
     dst := []
@@ -122,7 +122,7 @@ export {
     return dst
   },
   // key returns the first argument.
-  key: func(k, _) { return k },
+  key: |k, _| { return k },
   // value returns the second argument.
-  value: func(_, v) { return v }
+  value: |_, v| { return v }
 }

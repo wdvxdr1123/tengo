@@ -14,7 +14,7 @@ import (
 	"strconv"
 	"unicode/utf8"
 
-	"github.com/d5/tengo/v2"
+	"github.com/wdvxdr1123/tengo/v2"
 )
 
 // safeSet holds the value true if the ASCII character with the given array
