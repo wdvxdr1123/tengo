@@ -244,14 +244,14 @@ L:
 			switch p.token {
 			case token.Ident:
 				x = p.parseSelector(x)
-			case token.Dollar:
-				x = p.parseDollarCall(x)
 			default:
 				pos := p.pos
 				p.errorExpected(pos, "selector")
 				p.advance(stmtStart)
 				return &BadExpr{From: pos, To: p.pos}
 			}
+		case token.Pipe:
+			x = p.parsePipeCall(x)
 		case token.LBrack:
 			x = p.parseIndexOrSlice(x)
 		case token.LParen:
@@ -1193,11 +1193,11 @@ func (p *Parser) safePos(pos Pos) Pos {
 	return pos
 }
 
-func (p *Parser) parseDollarCall(x Expr) Expr {
+func (p *Parser) parsePipeCall(x Expr) Expr {
 	if p.trace {
-		defer untracep(tracep(p, "DollarCall"))
+		defer untracep(tracep(p, "PipeCall"))
 	}
-	_ = p.expect(token.Dollar)
+	_ = p.expect(token.Pipe)
 	var list = []Expr{x}
 	Func := p.parseOperand()
 	if p.token != token.LParen {

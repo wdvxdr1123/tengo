@@ -141,7 +141,7 @@ func (s *Scanner) Scan() (
 		case '?':
 			tok = token.Question
 		case '$':
-			tok = token.Dollar
+			tok = token.Pipe
 		case ';':
 			tok = token.Semicolon
 			literal = ";"
@@ -166,7 +166,19 @@ func (s *Scanner) Scan() (
 				insertSemi = true
 			}
 		case '-':
-			tok = s.switch3(token.Sub, token.SubAssign, '-', token.Dec)
+			switch s.ch {
+			case '=':
+				s.next()
+				tok = token.SubAssign
+			case '>':
+				s.next()
+				tok = token.Pipe
+			case '-':
+				s.next()
+				tok = token.Dec
+			default:
+				tok = token.Sub
+			}
 			if tok == token.Dec {
 				insertSemi = true
 			}

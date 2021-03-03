@@ -67,7 +67,7 @@ const (
 	Semicolon    // ;
 	Colon        // :
 	Question     // ?
-	Dollar       // $
+	Pipe         // ->
 	_operatorEnd
 	_keywordBeg
 	Break
@@ -144,7 +144,7 @@ var tokens = [...]string{
 	Semicolon:    ";",
 	Colon:        ":",
 	Question:     "?",
-	Dollar:       "$",
+	Pipe:         "->",
 	Break:        "break",
 	Continue:     "continue",
 	Else:         "else",
