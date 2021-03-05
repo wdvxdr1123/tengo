@@ -1,8 +1,8 @@
-let is_enumerable = |x| {
+is_enumerable := |x| {
   return is_array(x) || is_map(x) || is_immutable_array(x) || is_immutable_map(x)
 }
 
-let is_array_like = |x| {
+is_array_like := |x| {
   return is_array(x) || is_immutable_array(x)
 }
 
