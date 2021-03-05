@@ -1002,7 +1002,7 @@ r["x"] = {
     @j:1,
     @k:1
 }
-`, "Parse Error: illegal character U+0040 '@'\n\tat test:3:5 (and 10 more errors)")
+`, "Parse Error: expected map key, found '@'")
 
 	expectCompileError(t, `import("")`, "empty module name")
 

@@ -1,15 +1,15 @@
-is_enumerable := func(x) {
+let is_enumerable = |x| {
   return is_array(x) || is_map(x) || is_immutable_array(x) || is_immutable_map(x)
 }
 
-is_array_like := func(x) {
+let is_array_like = |x| {
   return is_array(x) || is_immutable_array(x)
 }
 
 export {
   // all returns true if the given function `fn` evaluates to a truthy value on
   // all of the items in `x`. It returns undefined if `x` is not enumerable.
-  all: func(x, fn) {
+  all: |x, fn| {
     if !is_enumerable(x) { return undefined }
 
     for k, v in x {
@@ -20,7 +20,7 @@ export {
   },
   // any returns true if the given function `fn` evaluates to a truthy value on
   // any of the items in `x`. It returns undefined if `x` is not enumerable.
-  any: func(x, fn) {
+  any: |x, fn| {
     if !is_enumerable(x) { return undefined }
 
     for k, v in x {
@@ -32,7 +32,7 @@ export {
   // chunk returns an array of elements split into groups the length of size.
   // If `x` can't be split evenly, the final chunk will be the remaining elements.
   // It returns undefined if `x` is not array.
-  chunk: func(x, size) {
+  chunk: |x, size| {
     if !is_array_like(x) || !size { return undefined }
 
     numElements := len(x)
@@ -49,7 +49,7 @@ export {
   },
   // at returns an element at the given index (if `x` is array) or
   // key (if `x` is map). It returns undefined if `x` is not enumerable.
-  at: func(x, key) {
+  at: |x, key| {
     if !is_enumerable(x) { return undefined }
 
     if is_array_like(x) {
@@ -64,7 +64,7 @@ export {
   // invoked with two arguments: `key` and `value`. `key` is an int index
   // if `x` is array. `key` is a string key if `x` is map. It does not iterate
   // and returns undefined if `x` is not enumerable.
-  each: func(x, fn) {
+  each: |x, fn| {
     if !is_enumerable(x) { return undefined }
 
     for k, v in x {
@@ -75,7 +75,7 @@ export {
   // returns truthy for. `fn` is invoked with two arguments: `key` and `value`.
   // `key` is an int index if `x` is array. `key` is a string key if `x` is map.
   // It returns undefined if `x` is not enumerable.
-  filter: func(x, fn) {
+  filter: |x, fn| {
     if !is_array_like(x) { return undefined }
 
     dst := []
@@ -89,7 +89,7 @@ export {
   // returns truthy for. `fn` is invoked with two arguments: `key` and `value`.
   // `key` is an int index if `x` is array. `key` is a string key if `x` is map.
   // It returns undefined if `x` is not enumerable.
-  find: func(x, fn) {
+  find: |x, fn| {
     if !is_enumerable(x) { return undefined }
 
     for k, v in x {
@@ -100,7 +100,7 @@ export {
   // element `fn` returns truthy for. `fn` is invoked with two arguments: `key`
   // and `value`. `key` is an int index if `x` is array. `key` is a string key if
   // `x` is map. It returns undefined if `x` is not enumerable.
-  find_key: func(x, fn) {
+  find_key: |x, fn| {
     if !is_enumerable(x) { return undefined }
 
     for k, v in x {
